@@ -153,10 +153,10 @@
     // CONFIGURACIÓN DE SUPABASE (TUS NUEVAS CREDENCIALES)
     // ==========================================
     const SUPABASE_URL = 'https://hnltwzjfznykdeneboee.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhubHR3empmem55a2RlbmVib2VlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg3MjYzMjcsImV4cCI6MjEwNDMwMjMyN30.htMx-qeDIqVI7ZKHLkPDRd6EW6K_L357IxXzJXMbGng';
-    
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhubHR3empmem55a2RlbmVib2VlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg3MjYzMjcsImV4cCI6MjEwNDMwMjMyN30.htMx-qeDIqVI7ZKHLkPDRd6EW6K_L357IxXzJXMbGng';
 
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    
     let mascotas = [];
     let idMascotaActiva = null;
     let fotoBase64Temporal = '';
