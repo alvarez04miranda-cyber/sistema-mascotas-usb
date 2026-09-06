@@ -7,8 +7,10 @@
 
 <!-- Bootstrap 5 CSS vía CDN -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<!-- Bootstrap Icons vía CDN (para íconos de botones) -->
+<!-- Bootstrap Icons vía CDN -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<!-- Supabase JS Client vía CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
     :root{
@@ -161,7 +163,6 @@
 <!-- ======================= CABECERA INSTITUCIONAL ======================= -->
 <nav class="navbar navbar-usb navbar-dark py-3 mb-4">
     <div class="container d-flex align-items-center">
-        <!-- Logo institucional (SVG en línea con los colores de la USB) -->
         <svg class="logo-usb" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
             <circle cx="50" cy="50" r="48" fill="#003399" stroke="#FFCC00" stroke-width="4"/>
             <path d="M50 20c-8 0-14 6-14 14 0 6 4 10 8 13-9 3-16 11-16 21h44c0-10-7-18-16-21 4-3 8-7 8-13 0-8-6-14-14-14z" fill="#FFCC00"/>
@@ -228,7 +229,7 @@
                 <button type="reset" class="btn btn-outline-secondary me-2">
                     <i class="bi bi-arrow-counterclockwise"></i> Limpiar
                 </button>
-                <button type="submit" class="btn btn-usb-rojo">
+                <button type="submit" class="btn btn-usb-rojo" id="btnSubmit">
                     <i class="bi bi-save"></i> Registrar Mascota
                 </button>
             </div>
@@ -237,7 +238,7 @@
 
     <!-- ======================= GALERÍA DE ADOPCIÓN ======================= -->
     <div class="franja-titulo d-flex justify-content-between align-items-center flex-wrap">
-        <h4 class="m-0"><i class="bi bi-images"></i> Galería de Adopción</h4>
+        <h4 class="m-0"><i class="bi bi-images"></i> Galería de Adopción (Sincronizada en la Nube)</h4>
         <div class="mt-2 mt-md-0">
             <select id="filtroEstado" class="form-select form-select-sm d-inline-block w-auto">
                 <option value="Todos">Todos los estados</option>
@@ -282,309 +283,191 @@
     </div>
 </footer>
 
-<!-- Bootstrap 5 JS Bundle (incluye Popper) vía CDN -->
+<!-- Bootstrap 5 JS Bundle vía CDN -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-/* =========================================================================
-   SISTEMA DE CONTROL Y ADOPCIÓN DE MASCOTAS - LÓGICA JAVASCRIPT
-   Universidad Salesiana de Bolivia - Programación Avanzada
-   =========================================================================
-   Estructura de datos: cada mascota es un objeto JS con la forma:
-   {
-       id: <timestamp único>,
-       nombre, especie, edad, raza, salud, descripcion,
-       foto: <cadena Base64 de la imagen>,
-       estado: "Disponible" | "Adoptado"
-   }
-   Todas las mascotas se guardan en un arreglo que se persiste en
-   localStorage bajo la clave "mascotasUSB", de modo que la información
-   y las fotografías (ya convertidas a Base64) sobreviven al recargar
-   la página o cerrar el navegador.
-   ========================================================================= */
+    // ==========================================
+    // CONFIGURACIÓN DE SUPABASE (REEMPLAZA AQUÍ)
+    // ==========================================
+    const SUPABASE_URL = 'AQUÍ_PEGAS_TU_PROJECT_URL'; 
+    const SUPABASE_ANON_KEY = 'AQUÍ_PEGAS_TU_ANON_KEY';
+    
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const CLAVE_STORAGE = 'mascotasUSB';
+    let mascotas = [];
+    let idMascotaActiva = null;
+    let fotoBase64Temporal = '';
 
-// Arreglo en memoria con todas las mascotas registradas.
-// Se inicializa leyendo lo que ya existiera en localStorage (persistencia).
-let mascotas = cargarDesdeStorage();
+    const galeria = document.getElementById('galeria');
+    const formMascota = document.getElementById('formMascota');
+    const inputFoto = document.getElementById('foto');
+    const previewFoto = document.getElementById('previewFoto');
+    const filtroEstado = document.getElementById('filtroEstado');
+    const modalPerfilEl = document.getElementById('modalPerfil');
+    const modalPerfil = new bootstrap.Modal(modalPerfilEl);
+    const modalBody = document.getElementById('modalBody');
+    const btnEliminarModal = document.getElementById('btnEliminarModal');
 
-// Referencias a elementos del DOM que se reutilizan varias veces
-const galeria = document.getElementById('galeria');
-const formMascota = document.getElementById('formMascota');
-const inputFoto = document.getElementById('foto');
-const previewFoto = document.getElementById('previewFoto');
-const filtroEstado = document.getElementById('filtroEstado');
-const modalPerfilEl = document.getElementById('modalPerfil');
-const modalPerfil = new bootstrap.Modal(modalPerfilEl);
-const modalBody = document.getElementById('modalBody');
-const btnEliminarModal = document.getElementById('btnEliminarModal');
+    // Manejo de la foto local a Base64
+    inputFoto.addEventListener('change', function(e){
+        const archivo = e.target.files[0];
+        if(!archivo){ fotoBase64Temporal = ''; previewFoto.style.display = 'none'; return; }
+        const lector = new FileReader();
+        lector.onload = function(evt){
+            fotoBase64Temporal = evt.target.result;
+            previewFoto.src = fotoBase64Temporal;
+            previewFoto.style.display = 'block';
+        };
+        lector.readAsDataURL(archivo);
+    });
 
-// Variable para recordar qué mascota está abierta actualmente en el modal
-let idMascotaActiva = null;
+    // 1. CARGAR DATOS DESDE SUPABASE
+    async function cargarMascotasDesdeSupabase(){
+        const { data, error } = await supabaseClient.from('mascotas').select('*').order('id', { ascending: false });
+        if(error){
+            console.error('Error al cargar:', error);
+            return;
+        }
+        mascotas = data || [];
+        renderizarGaleria();
+    }
 
-// Foto en Base64 temporal mientras el usuario llena el formulario
-let fotoBase64Temporal = '';
+    // 2. INSERTAR NUEVA MASCOTA EN SUPABASE
+    formMascota.addEventListener('submit', async function(e){
+        e.preventDefault();
+        const btnSubmit = document.getElementById('btnSubmit');
+        btnSubmit.disabled = true;
+        btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Guardando en la nube...';
 
-/* -------------------------------------------------------------------
-   1. PERSISTENCIA CON localStorage
-   ------------------------------------------------------------------- */
+        const nuevaMascota = {
+            nombre: document.getElementById('nombre').value.trim(),
+            especie: document.getElementById('especie').value,
+            edad: Number(document.getElementById('edad').value),
+            raza: document.getElementById('raza').value.trim(),
+            salud: document.getElementById('salud').value.trim(),
+            descripcion: document.getElementById('descripcion').value.trim(),
+            foto: fotoBase64Temporal || generarFotoPlaceholder(),
+            estado: 'Disponible'
+        };
 
-// Lee el arreglo de mascotas guardado en localStorage (si existe).
-// localStorage solo almacena texto, por lo que usamos JSON.stringify /
-// JSON.parse para convertir entre el arreglo de objetos JS y texto.
-function cargarDesdeStorage(){
-    const datos = localStorage.getItem(CLAVE_STORAGE);
-    return datos ? JSON.parse(datos) : [];
-}
+        const { error } = await supabaseClient.from('mascotas').insert([nuevaMascota]);
 
-// Guarda el arreglo completo de mascotas (incluyendo las fotos en Base64)
-// en localStorage. Se llama cada vez que hay un cambio: alta, cambio de
-// estado o eliminación.
-function guardarEnStorage(){
-    localStorage.setItem(CLAVE_STORAGE, JSON.stringify(mascotas));
-}
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = '<i class="bi bi-save"></i> Registrar Mascota';
 
-/* -------------------------------------------------------------------
-   2. MANEJO DEL INPUT DE ARCHIVO (FileReader -> Base64)
-   ------------------------------------------------------------------- */
+        if(error){
+            alert('Error al registrar en Supabase: ' + error.message);
+            return;
+        }
 
-// Evento 'change' del input type="file": se dispara cuando el usuario
-// selecciona una imagen desde su dispositivo.
-inputFoto.addEventListener('change', function(evento){
-    const archivo = evento.target.files[0]; // El archivo seleccionado (o undefined)
-
-    if(!archivo){
-        fotoBase64Temporal = '';
+        formMascota.reset();
         previewFoto.style.display = 'none';
-        return;
+        fotoBase64Temporal = '';
+        cargarMascotasDesdeSupabase();
+    });
+
+    function generarFotoPlaceholder(){
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="220"><rect width="100%" height="100%" fill="#e9ecef"/><text x="50%" y="50%" font-size="16" fill="#6c757d" text-anchor="middle" dy=".3em" font-family="Arial">Sin fotografía</text></svg>`;
+        return 'data:image/svg+xml;base64,' + btoa(svg);
     }
 
-    // FileReader permite leer el contenido de archivos locales de forma
-    // asíncrona. readAsDataURL() lee el archivo y lo codifica como una
-    // cadena Base64 con el prefijo "data:image/...;base64,....", lista
-    // para usarse directamente como src de una etiqueta <img>.
-    const lector = new FileReader();
+    // 3. RENDERIZAR GALERÍA
+    function renderizarGaleria(){
+        const filtro = filtroEstado.value;
+        const listaFiltrada = mascotas.filter(m => filtro === 'Todos' || m.estado === filtro);
 
-    // Este callback se ejecuta cuando FileReader TERMINA de leer el
-    // archivo (es un evento asíncrono, no bloquea la interfaz).
-    lector.onload = function(eventoLectura){
-        // eventoLectura.target.result contiene la cadena Base64 resultante
-        fotoBase64Temporal = eventoLectura.target.result;
+        galeria.innerHTML = '';
+        if(listaFiltrada.length === 0){
+            galeria.innerHTML = `<div class="col-12"><div class="empty-state"><i class="bi bi-emoji-frown" style="font-size:2.5rem;"></i><p class="mt-2">No hay mascotas registradas todavía.</p></div></div>`;
+            return;
+        }
 
-        // Manipulación del DOM: mostramos una vista previa inmediata
-        // de la imagen seleccionada, actualizando el atributo src
-        // de la etiqueta <img id="previewFoto">.
-        previewFoto.src = fotoBase64Temporal;
-        previewFoto.style.display = 'block';
-    };
+        listaFiltrada.forEach(mascota => {
+            const esDisponible = mascota.estado === 'Disponible';
+            const claseBadge = esDisponible ? 'badge-disponible' : 'badge-adoptado';
+            const textoBtnEstado = esDisponible ? '<i class="bi bi-heart-fill"></i> Marcar Adoptado' : '<i class="bi bi-arrow-counterclockwise"></i> Marcar Disponible';
+            const claseBtnEstado = esDisponible ? 'btn-usb-rojo' : 'btn-usb-azul';
 
-    // Inicia la lectura asíncrona del archivo como URL de datos (Base64)
-    lector.readAsDataURL(archivo);
-});
-
-/* -------------------------------------------------------------------
-   3. REGISTRO DE UNA NUEVA MASCOTA (submit del formulario)
-   ------------------------------------------------------------------- */
-
-formMascota.addEventListener('submit', function(evento){
-    evento.preventDefault(); // Evita que la página se recargue al enviar el formulario
-
-    // Construimos el objeto mascota a partir de los valores del formulario
-    const nuevaMascota = {
-        id: Date.now(), // Identificador único simple basado en la marca de tiempo
-        nombre: document.getElementById('nombre').value.trim(),
-        especie: document.getElementById('especie').value,
-        edad: document.getElementById('edad').value,
-        raza: document.getElementById('raza').value.trim(),
-        salud: document.getElementById('salud').value.trim(),
-        descripcion: document.getElementById('descripcion').value.trim(),
-        // Si el usuario no cargó foto, usamos un marcador de posición genérico
-        foto: fotoBase64Temporal || generarFotoPlaceholder(),
-        estado: 'Disponible'
-    };
-
-    // Agregamos la nueva mascota al arreglo en memoria
-    mascotas.push(nuevaMascota);
-
-    // Persistimos el arreglo actualizado en localStorage
-    guardarEnStorage();
-
-    // Volvemos a pintar la galería para reflejar el nuevo registro
-    renderizarGaleria();
-
-    // Limpiamos el formulario y la vista previa de la foto
-    formMascota.reset();
-    previewFoto.style.display = 'none';
-    fotoBase64Temporal = '';
-});
-
-// Genera una imagen de marcador de posición (SVG codificado como Base64/URI)
-// para mascotas registradas sin fotografía.
-function generarFotoPlaceholder(){
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="220">
-        <rect width="100%" height="100%" fill="#e9ecef"/>
-        <text x="50%" y="50%" font-size="16" fill="#6c757d" text-anchor="middle" dy=".3em" font-family="Arial">Sin fotografía</text>
-    </svg>`;
-    return 'data:image/svg+xml;base64,' + btoa(svg);
-}
-
-/* -------------------------------------------------------------------
-   4. RENDERIZADO DE LA GALERÍA (manipulación del DOM)
-   ------------------------------------------------------------------- */
-
-// Reconstruye visualmente la galería de tarjetas a partir del arreglo
-// "mascotas", aplicando el filtro de estado seleccionado.
-function renderizarGaleria(){
-    const filtro = filtroEstado.value;
-
-    // Filtramos el arreglo según el estado elegido en el <select>
-    const listaFiltrada = mascotas.filter(m => filtro === 'Todos' || m.estado === filtro);
-
-    // Vaciamos el contenedor antes de volver a construirlo
-    galeria.innerHTML = '';
-
-    if(listaFiltrada.length === 0){
-        galeria.innerHTML = `
-            <div class="col-12">
-                <div class="empty-state">
-                    <i class="bi bi-emoji-frown" style="font-size:2.5rem;"></i>
-                    <p class="mt-2">No hay mascotas registradas para este filtro todavía.</p>
-                </div>
-            </div>`;
-        return;
-    }
-
-    // Por cada mascota, generamos dinámicamente el HTML de su tarjeta
-    listaFiltrada.forEach(mascota => {
-        const esDisponible = mascota.estado === 'Disponible';
-        const claseBadge = esDisponible ? 'badge-disponible' : 'badge-adoptado';
-        const textoBtnEstado = esDisponible
-            ? '<i class="bi bi-heart-fill"></i> Marcar Adoptado'
-            : '<i class="bi bi-arrow-counterclockwise"></i> Marcar Disponible';
-        const claseBtnEstado = esDisponible ? 'btn-usb-rojo' : 'btn-usb-azul';
-
-        // Creamos el elemento contenedor de la columna Bootstrap
-        const columna = document.createElement('div');
-        columna.className = 'col-sm-6 col-lg-4';
-
-        // Insertamos el HTML de la tarjeta usando template literals
-        columna.innerHTML = `
-            <div class="card card-mascota position-relative">
-                <span class="badge ${claseBadge} card-header-especie">${mascota.estado}</span>
-                <img src="${mascota.foto}" class="card-img-top" alt="Foto de ${mascota.nombre}">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title mb-1">${mascota.nombre}</h5>
-                    <p class="card-text text-muted mb-2">
-                        <i class="bi bi-tag-fill"></i> ${mascota.especie} &nbsp;|&nbsp;
-                        <i class="bi bi-calendar3"></i> ${mascota.edad} años
-                    </p>
-                    <div class="mt-auto d-grid gap-2">
-                        <button class="btn btn-usb-amarillo btn-sm btn-ver-perfil" data-id="${mascota.id}">
-                            <i class="bi bi-person-badge"></i> Ver Perfil Completo
-                        </button>
-                        <button class="btn ${claseBtnEstado} btn-sm btn-toggle-estado" data-id="${mascota.id}">
-                            ${textoBtnEstado}
-                        </button>
+            const columna = document.createElement('div');
+            columna.className = 'col-sm-6 col-lg-4';
+            columna.innerHTML = `
+                <div class="card card-mascota position-relative">
+                    <span class="badge ${claseBadge} card-header-especie">${mascota.estado}</span>
+                    <img src="${mascota.foto || ''}" class="card-img-top" alt="Foto">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title mb-1">${mascota.nombre}</h5>
+                        <p class="card-text text-muted mb-2"><i class="bi bi-tag-fill"></i> ${mascota.especie} &nbsp;|&nbsp; <i class="bi bi-calendar3"></i> ${mascota.edad} años</p>
+                        <div class="mt-auto d-grid gap-2">
+                            <button class="btn btn-usb-amarillo btn-sm btn-ver-perfil" data-id="${mascota.id}"><i class="bi bi-person-badge"></i> Ver Perfil Completo</button>
+                            <button class="btn ${claseBtnEstado} btn-sm btn-toggle-estado" data-id="${mascota.id}">${textoBtnEstado}</button>
+                        </div>
                     </div>
-                </div>
-            </div>`;
+                </div>`;
+            galeria.appendChild(columna);
+        });
 
-        galeria.appendChild(columna);
+        enlazarEventosDeTarjetas();
+    }
+
+    function enlazarEventosDeTarjetas(){
+        document.querySelectorAll('.btn-ver-perfil').forEach(b => b.addEventListener('click', () => abrirPerfilCompleto(Number(b.dataset.id))));
+        document.querySelectorAll('.btn-toggle-estado').forEach(b => b.addEventListener('click', () => alternarEstadoMascota(Number(b.dataset.id))));
+    }
+
+    // 4. CAMBIAR ESTADO EN SUPABASE
+    async function alternarEstadoMascota(id){
+        const mascota = mascotas.find(m => m.id === id);
+        if(!mascota) return;
+
+        const nuevoEstado = mascota.estado === 'Disponible' ? 'Adoptado' : 'Disponible';
+        const { error } = await supabaseClient.from('mascotas').update({ estado: nuevoEstado }).eq('id', id);
+
+        if(error){ alert('Error al actualizar: ' + error.message); return; }
+        cargarMascotasDesdeSupabase();
+    }
+
+    function abrirPerfilCompleto(id){
+        const mascota = mascotas.find(m => m.id === id);
+        if(!mascota) return;
+        idMascotaActiva = id;
+        const claseBadge = mascota.estado === 'Disponible' ? 'badge-disponible' : 'badge-adoptado';
+
+        modalBody.innerHTML = `
+            <img src="${mascota.foto}" class="foto-modal" alt="Foto">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="mb-0">${mascota.nombre}</h3>
+                <span class="badge ${claseBadge} fs-6">${mascota.estado}</span>
+            </div>
+            <table class="table table-bordered">
+                <tbody>
+                    <tr><th style="width:35%">Especie</th><td>${mascota.especie}</td></tr>
+                    <tr><th>Raza</th><td>${mascota.raza}</td></tr>
+                    <tr><th>Edad</th><td>${mascota.edad} años</td></tr>
+                    <tr><th>Ficha médica</th><td>${mascota.salud}</td></tr>
+                    <tr><th>Historia</th><td>${mascota.descripcion}</td></tr>
+                </tbody>
+            </table>`;
+        modalPerfil.show();
+    }
+
+    // 5. ELIMINAR REGISTRO EN SUPABASE
+    btnEliminarModal.addEventListener('click', async function(){
+        if(idMascotaActiva === null) return;
+        if(!confirm('¿Seguro que deseas eliminar este registro?')) return;
+
+        const { error } = await supabaseClient.from('mascotas').delete().eq('id', idMascotaActiva);
+        if(error){ alert('Error al eliminar: ' + error.message); return; }
+
+        modalPerfil.hide();
+        idMascotaActiva = null;
+        cargarMascotasDesdeSupabase();
     });
 
-    // Una vez insertadas las tarjetas en el DOM, enlazamos sus eventos
-    enlazarEventosDeTarjetas();
-}
+    filtroEstado.addEventListener('change', renderizarGaleria);
 
-// Asigna los listeners de clic a los botones recién creados dentro de
-// las tarjetas (se debe repetir tras cada renderizado porque los
-// elementos anteriores fueron eliminados del DOM).
-function enlazarEventosDeTarjetas(){
-    document.querySelectorAll('.btn-ver-perfil').forEach(boton => {
-        boton.addEventListener('click', () => abrirPerfilCompleto(Number(boton.dataset.id)));
-    });
-
-    document.querySelectorAll('.btn-toggle-estado').forEach(boton => {
-        boton.addEventListener('click', () => alternarEstadoMascota(Number(boton.dataset.id)));
-    });
-}
-
-/* -------------------------------------------------------------------
-   5. CAMBIO DE ESTADO (Disponible <-> Adoptado)
-   ------------------------------------------------------------------- */
-
-function alternarEstadoMascota(id){
-    const mascota = mascotas.find(m => m.id === id);
-    if(!mascota) return;
-
-    mascota.estado = mascota.estado === 'Disponible' ? 'Adoptado' : 'Disponible';
-
-    guardarEnStorage();   // Persistimos el cambio
-    renderizarGaleria();  // Refrescamos la vista
-}
-
-/* -------------------------------------------------------------------
-   6. MODAL DE PERFIL COMPLETO (ficha médica, historia y foto grande)
-   ------------------------------------------------------------------- */
-
-function abrirPerfilCompleto(id){
-    const mascota = mascotas.find(m => m.id === id);
-    if(!mascota) return;
-
-    idMascotaActiva = id; // Guardamos referencia para el botón "Eliminar"
-
-    const claseBadge = mascota.estado === 'Disponible' ? 'badge-disponible' : 'badge-adoptado';
-
-    // Construimos el contenido del modal dinámicamente con los datos
-    // completos de la mascota seleccionada.
-    modalBody.innerHTML = `
-        <img src="${mascota.foto}" class="foto-modal" alt="Foto completa de ${mascota.nombre}">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3 class="mb-0">${mascota.nombre}</h3>
-            <span class="badge ${claseBadge} fs-6">${mascota.estado}</span>
-        </div>
-        <table class="table table-bordered">
-            <tbody>
-                <tr><th style="width:35%">Especie</th><td>${mascota.especie}</td></tr>
-                <tr><th>Raza</th><td>${mascota.raza}</td></tr>
-                <tr><th>Edad</th><td>${mascota.edad} años</td></tr>
-                <tr><th>Ficha médica / Vacunas</th><td>${mascota.salud}</td></tr>
-                <tr><th>Historia</th><td>${mascota.descripcion}</td></tr>
-            </tbody>
-        </table>
-    `;
-
-    modalPerfil.show();
-}
-
-// Botón "Eliminar registro" dentro del modal
-btnEliminarModal.addEventListener('click', function(){
-    if(idMascotaActiva === null) return;
-
-    const confirmar = confirm('¿Está seguro de eliminar este registro? Esta acción no se puede deshacer.');
-    if(!confirmar) return;
-
-    mascotas = mascotas.filter(m => m.id !== idMascotaActiva);
-    guardarEnStorage();
-    renderizarGaleria();
-    modalPerfil.hide();
-    idMascotaActiva = null;
-});
-
-/* -------------------------------------------------------------------
-   7. FILTRO DE GALERÍA POR ESTADO
-   ------------------------------------------------------------------- */
-
-filtroEstado.addEventListener('change', renderizarGaleria);
-
-/* -------------------------------------------------------------------
-   8. INICIALIZACIÓN DE LA APLICACIÓN
-   ------------------------------------------------------------------- */
-
-// Al cargar la página, pintamos la galería con lo que ya existiera
-// previamente en localStorage (persistencia entre recargas).
-renderizarGaleria();
+    // Inicializar cargando desde Supabase
+    cargarMascotasDesdeSupabase();
 </script>
 
 </body>
