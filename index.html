@@ -14,45 +14,67 @@
 
 <style>
     :root{
-        --usb-azul: #003399;
-        --usb-rojo: #D31111;
-        --usb-amarillo: #FFCC00;
+        --usb-azul: #2A52BE;
+        --usb-celeste-suave: #EBF3FE;
+        --usb-rosa: #FF6B81;
+        --usb-rosa-hover: #e0556c;
+        --usb-amarillo: #FFD166;
+        --usb-verde: #06D6A0;
     }
-    body{ background-color:#f4f6fb; font-family: 'Segoe UI', Arial, sans-serif; }
-    .navbar-usb{ background: linear-gradient(90deg, var(--usb-azul) 0%, #001f66 100%); border-bottom: 5px solid var(--usb-amarillo); }
+    body{ background-color:#f8fafc; font-family: 'Segoe UI', Arial, sans-serif; }
+    .navbar-usb{ background: linear-gradient(135deg, #1d3c86 0%, var(--usb-azul) 100%); border-bottom: 5px solid var(--usb-amarillo); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
     .navbar-usb .navbar-brand{ color:#fff; font-weight:700; letter-spacing:.5px; }
     .navbar-usb .subtitulo{ color: var(--usb-amarillo); font-size:.8rem; display:block; font-weight:400; }
-    .logo-usb{ width:55px; height:55px; margin-right:12px; filter: drop-shadow(0 0 2px rgba(0,0,0,.4)); }
-    .btn-usb-rojo{ background-color: var(--usb-rojo); border-color: var(--usb-rojo); color:#fff; }
-    .btn-usb-rojo:hover{ background-color:#a80d0d; border-color:#a80d0d; color:#fff;}
-    .btn-usb-azul{ background-color: var(--usb-azul); border-color: var(--usb-azul); color:#fff; }
-    .btn-usb-azul:hover{ background-color:#00246e; border-color:#00246e; color:#fff;}
-    .btn-usb-amarillo{ background-color: var(--usb-amarillo); border-color: var(--usb-amarillo); color:#1a1a1a; font-weight:600; }
-    .btn-usb-amarillo:hover{ background-color:#e6b800; border-color:#e6b800;}
-    .card-mascota{ border: none; border-radius: 14px; overflow:hidden; box-shadow: 0 4px 12px rgba(0,0,0,.08); transition: transform .15s ease, box-shadow .15s ease; height:100%; }
-    .card-mascota:hover{ transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,.15); }
+    .logo-usb{ width:55px; height:55px; margin-right:12px; filter: drop-shadow(0 0 4px rgba(0,0,0,.3)); }
+    
+    /* Botones temáticos con toques de patitas/mascotas */
+    .btn-usb-rosa{ background-color: var(--usb-rosa); border-color: var(--usb-rosa); color:#fff; border-radius: 20px; font-weight:600; transition: all 0.2s; }
+    .btn-usb-rosa:hover{ background-color: var(--usb-rosa-hover); border-color: var(--usb-rosa-hover); color:#fff; transform: scale(1.02); }
+    
+    .btn-usb-azul{ background-color: var(--usb-azul); border-color: var(--usb-azul); color:#fff; border-radius: 20px; font-weight:600; transition: all 0.2s; }
+    .btn-usb-azul:hover{ background-color:#1d3c86; border-color:#1d3c86; color:#fff; transform: scale(1.02); }
+    
+    .btn-usb-amarillo{ background-color: var(--usb-amarillo); border-color: var(--usb-amarillo); color:#212529; font-weight:700; border-radius: 20px; transition: all 0.2s; }
+    .btn-usb-amarillo:hover{ background-color:#e0b650; border-color:#e0b650; transform: scale(1.02); }
+
+    .card-mascota{ border: none; border-radius: 16px; overflow:hidden; background: #ffffff; box-shadow: 0 6px 18px rgba(42,82,190,0.06); transition: transform .2s ease, box-shadow .2s ease; height:100%; }
+    .card-mascota:hover{ transform: translateY(-5px); box-shadow: 0 12px 24px rgba(42,82,190,0.12); }
     .card-mascota .card-img-top{ height:220px; object-fit:cover; background-color:#e9ecef; }
-    .card-mascota .card-header-especie{ position:absolute; top:10px; right:10px; }
-    .badge-disponible{ background-color:#198754; }
-    .badge-adoptado{ background-color: var(--usb-rojo); }
-    .franja-titulo{ background-color: var(--usb-azul); color:#fff; border-left: 6px solid var(--usb-amarillo); padding: .6rem 1rem; border-radius: 6px; margin-bottom: 1.2rem; }
-    .panel-formulario{ background:#fff; border-radius: 14px; padding: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,.06); border-top: 5px solid var(--usb-rojo); }
-    .preview-foto{ width:100%; max-height:180px; object-fit:cover; border-radius:10px; border:2px dashed #ccc; display:none; }
+    .card-mascota .card-header-especie{ position:absolute; top:12px; right:12px; border-radius: 12px; padding: 6px 12px; font-weight: 600; }
+    
+    .badge-disponible{ background-color: var(--usb-verde); color: #fff; }
+    .badge-adoptado{ background-color: var(--usb-rosa); color: #fff; }
+    
+    .franja-titulo{ background: linear-gradient(90deg, var(--usb-azul) 0%, #436be3 100%); color:#fff; border-left: 6px solid var(--usb-amarillo); padding: .8rem 1.2rem; border-radius: 8px; margin-bottom: 1.2rem; box-shadow: 0 3px 10px rgba(0,0,0,0.05); }
+    .panel-formulario{ background:#fff; border-radius: 16px; padding: 2rem; box-shadow: 0 6px 18px rgba(0,0,0,0.04); border-top: 6px solid var(--usb-rosa); }
+    
+    .preview-foto{ width:100%; max-height:180px; object-fit:cover; border-radius:10px; border:2px dashed #cbd5e1; display:none; }
     .modal-header-usb{ background-color: var(--usb-azul); color:#fff; border-bottom: 4px solid var(--usb-amarillo); }
-    .foto-modal{ width:100%; max-height:380px; object-fit:cover; border-radius:12px; margin-bottom:1rem; }
-    footer.footer-usb{ background-color: var(--usb-azul); color:#fff; border-top:5px solid var(--usb-amarillo); padding: 1.2rem 0; margin-top: 3rem; }
+    .foto-modal{ width:100%; max-height:380px; object-fit:cover; border-radius:12px; margin-bottom:1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    
+    footer.footer-usb{ background: linear-gradient(135deg, #1d3c86 0%, var(--usb-azul) 100%); color:#fff; border-top:5px solid var(--usb-amarillo); padding: 1.5rem 0; margin-top: 3rem; }
     footer.footer-usb strong{ color: var(--usb-amarillo); }
-    .empty-state{ text-align:center; padding: 3rem 1rem; color:#6c757d; }
+    .empty-state{ text-align:center; padding: 3rem 1rem; color:#64748b; }
+    
+    /* Estilo estético para inputs */
+    .form-control, .form-select { border-radius: 10px; padding: .6rem 1rem; border-color: #cbd5e1; }
+    .form-control:focus, .form-select:focus { border-color: var(--usb-azul); box-shadow: 0 0 0 0.25rem rgba(42,82,190,0.15); }
 </style>
 </head>
 <body>
 
 <nav class="navbar navbar-usb navbar-dark py-3 mb-4">
     <div class="container d-flex align-items-center">
+        <!-- Logo con forma de huella de mascota y colores institucionales -->
         <svg class="logo-usb" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="50" cy="50" r="48" fill="#003399" stroke="#FFCC00" stroke-width="4"/>
-            <path d="M50 20c-8 0-14 6-14 14 0 6 4 10 8 13-9 3-16 11-16 21h44c0-10-7-18-16-21 4-3 8-7 8-13 0-8-6-14-14-14z" fill="#FFCC00"/>
-            <text x="50" y="88" text-anchor="middle" font-size="14" fill="#D31111" font-weight="bold" font-family="Arial">USB</text>
+            <circle cx="50" cy="50" r="48" fill="#1d3c86" stroke="#FFD166" stroke-width="4"/>
+            <!-- Almohadilla principal de la huella -->
+            <path d="M50 52 c-9 0 -15 6 -15 13 c0 7 6 11 15 11 c9 0 15 -4 15 -11 c0 -7 -6 -13 -15 -13z" fill="#FFD166"/>
+            <!-- Deditos de la huella -->
+            <circle cx="36" cy="42" r="6" fill="#FFD166"/>
+            <circle cx="50" cy="35" r="7" fill="#FFD166"/>
+            <circle cx="64" cy="42" r="6" fill="#FFD166"/>
+            <text x="50" y="24" text-anchor="middle" font-size="10" fill="#FF6B81" font-weight="bold" font-family="Arial">USB</text>
         </svg>
         <div>
             <span class="navbar-brand mb-0 h1">Sistema de Control y Adopción de Mascotas</span>
@@ -63,17 +85,17 @@
 
 <div class="container">
     <div class="franja-titulo">
-        <h4 class="m-0"><i class="bi bi-clipboard2-plus"></i> Registro de Mascotas en Adopción</h4>
+        <h4 class="m-0"><i class="bi bi-shield-shaded"></i> Registro de Mascotas en Adopción</h4>
     </div>
 
     <div class="panel-formulario mb-5">
         <form id="formMascota" class="row g-3">
             <div class="col-md-4">
-                <label class="form-label fw-bold">Nombre</label>
+                <label class="form-label fw-bold text-secondary">Nombre</label>
                 <input type="text" class="form-control" id="nombre" required placeholder="Ej. Firulais">
             </div>
             <div class="col-md-4">
-                <label class="form-label fw-bold">Especie</label>
+                <label class="form-label fw-bold text-secondary">Especie</label>
                 <select class="form-select" id="especie" required>
                     <option value="" selected disabled>Seleccione...</option>
                     <option value="Perro">Perro</option>
@@ -82,37 +104,37 @@
                 </select>
             </div>
             <div class="col-md-4">
-                <label class="form-label fw-bold">Edad (años)</label>
+                <label class="form-label fw-bold text-secondary">Edad (años)</label>
                 <input type="number" min="0" step="1" class="form-control" id="edad" required placeholder="Ej. 2">
             </div>
             <div class="col-md-6">
-                <label class="form-label fw-bold">Raza</label>
+                <label class="form-label fw-bold text-secondary">Raza</label>
                 <input type="text" class="form-control" id="raza" required placeholder="Ej. Criollo, Labrador">
             </div>
             <div class="col-md-6">
-                <label class="form-label fw-bold">Estado de Salud / Vacunas</label>
+                <label class="form-label fw-bold text-secondary">Estado de Salud / Vacunas</label>
                 <input type="text" class="form-control" id="salud" required placeholder="Ej. Vacunas al día">
             </div>
             <div class="col-md-8">
-                <label class="form-label fw-bold">Descripción / Historia</label>
+                <label class="form-label fw-bold text-secondary">Descripción / Historia</label>
                 <textarea class="form-control" id="descripcion" rows="3" required placeholder="Cuenta brevemente la historia..."></textarea>
             </div>
             <div class="col-md-4">
-                <label class="form-label fw-bold">Fotografía</label>
+                <label class="form-label fw-bold text-secondary">Fotografía</label>
                 <input type="file" class="form-control" id="foto" accept="image/*">
                 <img id="previewFoto" class="preview-foto mt-2" alt="Vista previa">
             </div>
-            <div class="col-12 text-end">
-                <button type="reset" class="btn btn-outline-secondary me-2"><i class="bi bi-arrow-counterclockwise"></i> Limpiar</button>
-                <button type="submit" class="btn btn-usb-rojo"><i class="bi bi-save"></i> Registrar Mascota</button>
+            <div class="col-12 text-end mt-4">
+                <button type="reset" class="btn btn-outline-secondary px-4 me-2" style="border-radius: 20px;"><i class="bi bi-arrow-counterclockwise"></i> Limpiar</button>
+                <button type="submit" class="btn btn-usb-rosa px-4"><i class="bi bi-heart-fill"></i> Registrar Mascota</button>
             </div>
         </form>
     </div>
 
     <div class="franja-titulo d-flex justify-content-between align-items-center flex-wrap">
-        <h4 class="m-0"><i class="bi bi-images"></i> Galería de Adopción</h4>
+        <h4 class="m-0"><i class="bi bi-grid-fill"></i> Galería de Adopción</h4>
         <div class="mt-2 mt-md-0">
-            <select id="filtroEstado" class="form-select form-select-sm d-inline-block w-auto">
+            <select id="filtroEstado" class="form-select form-select-sm d-inline-block w-auto shadow-sm">
                 <option value="Todos">Todos los estados</option>
                 <option value="Disponible">Disponibles</option>
                 <option value="Adoptado">Adoptados</option>
@@ -125,15 +147,15 @@
 
 <div class="modal fade" id="modalPerfil" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
+        <div class="modal-content" style="border-radius: 16px; overflow: hidden;">
             <div class="modal-header modal-header-usb">
-                <h5 class="modal-title"><i class="bi bi-file-earmark-person"></i> Ficha Completa de la Mascota</h5>
+                <h5 class="modal-title"><i class="bi bi-info-circle-fill"></i> Ficha Completa de la Mascota</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body" id="modalBody"></div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-danger" id="btnEliminarModal"><i class="bi bi-trash"></i> Eliminar</button>
-                <button type="button" class="btn btn-usb-azul" data-bs-dismiss="modal">Cerrar</button>
+            <div class="modal-body p-4" id="modalBody"></div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-outline-danger px-3" style="border-radius: 20px;" id="btnEliminarModal"><i class="bi bi-trash"></i> Eliminar</button>
+                <button type="button" class="btn btn-usb-azul px-4" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
@@ -150,12 +172,12 @@
 
 <script>
     // ==========================================
-    // CONFIGURACIÓN DE SUPABASE (TUS NUEVAS CREDENCIALES)
+    // CONFIGURACIÓN DE SUPABASE (TUS CREDENCIALES PRESERVADAS)
     // ==========================================
     const SUPABASE_URL = 'https://hnltwzjfznykdeneboee.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhubHR3empmem55a2RlbmVib2VlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg3MjYzMjcsImV4cCI6MjEwNDMwMjMyN30.htMx-qeDIqVI7ZKHLkPDRd6EW6K_L357IxXzJXMbGng';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhubHR3empmem55a2RlbmVib2VlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg3MjYzMjcsImV4cCI6MjEwNDMwMjMyN30.htMx-qeDIqVI7ZKHLkPDRd6EW6K_L357IxXzJXMbGng';
 
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     
     let mascotas = [];
     let idMascotaActiva = null;
@@ -251,8 +273,9 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         listaFiltrada.forEach(mascota => {
             const esDisponible = mascota.estado === 'Disponible';
             const claseBadge = esDisponible ? 'badge-disponible' : 'badge-adoptado';
+            // Botones personalizados con temática de huellas / corazones
             const textoBtnEstado = esDisponible ? '<i class="bi bi-heart-fill"></i> Marcar Adoptado' : '<i class="bi bi-arrow-counterclockwise"></i> Marcar Disponible';
-            const claseBtnEstado = esDisponible ? 'btn-usb-rojo' : 'btn-usb-azul';
+            const claseBtnEstado = esDisponible ? 'btn-usb-rosa' : 'btn-usb-azul';
 
             const columna = document.createElement('div');
             columna.className = 'col-sm-6 col-lg-4';
@@ -262,11 +285,11 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                     <span class="badge ${claseBadge} card-header-especie">${mascota.estado}</span>
                     <img src="${mascota.foto || ''}" class="card-img-top" alt="Foto">
                     <div class="card-body d-flex flex-column">
-                        <h5 class="card-title mb-1">${mascota.nombre}</h5>
-                        <p class="card-text text-muted mb-2"><i class="bi bi-tag-fill"></i> ${mascota.especie} &nbsp;|&nbsp; <i class="bi bi-calendar3"></i> ${mascota.edad} años</p>
+                        <h5 class="card-title mb-1 fw-bold text-dark">${mascota.nombre}</h5>
+                        <p class="card-text text-muted mb-3"><i class="bi bi-tag-fill text-primary"></i> ${mascota.especie} &nbsp;|&nbsp; <i class="bi bi-calendar3 text-primary"></i> ${mascota.edad} años</p>
                         <div class="mt-auto d-grid gap-2">
-                            <button class="btn btn-usb-amarillo btn-sm btn-ver-perfil" data-id="${mascota.id}"><i class="bi bi-person-badge"></i> Ver Perfil</button>
-                            <button class="btn ${claseBtnEstado} btn-sm btn-toggle-estado" data-id="${mascota.id}">${textoBtnEstado}</button>
+                            <button class="btn btn-usb-amarillo btn-sm btn-ver-perfil shadow-sm" data-id="${mascota.id}"><i class="bi bi-shield-shaded"></i> Ver Perfil</button>
+                            <button class="btn ${claseBtnEstado} btn-sm btn-toggle-estado shadow-sm" data-id="${mascota.id}">${textoBtnEstado}</button>
                         </div>
                     </div>
                 </div>`;
@@ -313,16 +336,16 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         modalBody.innerHTML = `
             <img src="${mascota.foto || ''}" class="foto-modal" alt="Foto">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h3 class="mb-0">${mascota.nombre}</h3>
-                <span class="badge ${claseBadge} fs-6">${mascota.estado}</span>
+                <h3 class="mb-0 fw-bold">${mascota.nombre}</h3>
+                <span class="badge ${claseBadge} fs-6 px-3 py-2">${mascota.estado}</span>
             </div>
-            <table class="table table-bordered">
+            <table class="table table-bordered align-middle">
                 <tbody>
-                    <tr><th style="width:35%">Especie</th><td>${mascota.especie}</td></tr>
-                    <tr><th>Raza</th><td>${mascota.raza}</td></tr>
-                    <tr><th>Edad</th><td>${mascota.edad} años</td></tr>
-                    <tr><th>Ficha médica / Vacunas</th><td>${mascota.salud}</td></tr>
-                    <tr><th>Historia</th><td>${mascota.descripcion}</td></tr>
+                    <tr><th class="bg-light" style="width:35%">Especie</th><td>${mascota.especie}</td></tr>
+                    <tr><th class="bg-light">Raza</th><td>${mascota.raza}</td></tr>
+                    <tr><th class="bg-light">Edad</th><td>${mascota.edad} años</td></tr>
+                    <tr><th class="bg-light">Ficha médica / Vacunas</th><td>${mascota.salud}</td></tr>
+                    <tr><th class="bg-light">Historia</th><td>${mascota.descripcion}</td></tr>
                 </tbody>
             </table>`;
         modalPerfil.show();
