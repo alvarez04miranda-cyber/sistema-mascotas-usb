@@ -14,14 +14,14 @@
 
 <style>
     :root {
-        --pet-mint: #4ade80;
-        --pet-mint-dark: #22c55e;
-        --pet-pink: #fb7185;
-        --pet-pink-hover: #f43f5e;
-        --pet-purple: #8b5cf6;
-        --pet-bg: #f8fafc;
+        --pet-celeste: #38bdf8;
+        --pet-celeste-hover: #0ea5e9;
+        --pet-rosado: #f43f5e;
+        --pet-rosado-hover: #e11d48;
+        --pet-amarillo-pastel: #fef08a;
+        --pet-bg: #fdf2f8; /* Fondo general con un toque sumamente suave y cálido */
         --pet-card-bg: #ffffff;
-        --pet-text: #1e293b;
+        --pet-text: #334155;
     }
 
     body {
@@ -30,91 +30,97 @@
         color: var(--pet-text);
     }
 
-    /* Navbar estilo tierno y dinámico */
+    /* Navbar en combinación vibrante de celeste y rosado */
     .navbar-pet {
-        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-        border-bottom: 5px solid #facc15;
-        box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2);
+        background: linear-gradient(135deg, var(--pet-celeste) 0%, var(--pet-rosado) 100%);
+        border-bottom: 5px solid #fbbf24;
+        box-shadow: 0 6px 20px rgba(244, 63, 94, 0.25);
     }
     .navbar-pet .navbar-brand {
         color: #fff;
         font-weight: 800;
         letter-spacing: .5px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.15);
     }
     .navbar-pet .subtitulo {
-        color: #facc15;
+        color: #fef08a;
         font-size: .85rem;
         display: block;
-        font-weight: 500;
+        font-weight: 600;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.15);
     }
     .logo-huella {
-        width: 50px;
-        height: 50px;
+        width: 52px;
+        height: 52px;
         margin-right: 12px;
-        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        filter: drop-shadow(0 2px 5px rgba(0,0,0,0.25));
     }
 
-    /* Botones estilo dinámico y patita/corazón */
-    .btn-pet-rosa {
-        background-color: var(--pet-pink);
+    /* Botones dinámicos y alegres en tonos rosado y celeste */
+    .btn-pet-rosado {
+        background-color: var(--pet-rosado);
         border: none;
         color: #fff;
         border-radius: 50px;
-        padding: 0.5rem 1.2rem;
-        font-weight: 600;
-        box-shadow: 0 4px 10px rgba(251, 113, 133, 0.3);
+        padding: 0.55rem 1.3rem;
+        font-weight: 700;
+        box-shadow: 0 4px 12px rgba(244, 63, 94, 0.35);
         transition: all 0.2s ease-in-out;
     }
-    .btn-pet-rosa:hover {
-        background-color: var(--pet-pink-hover);
+    .btn-pet-rosado:hover {
+        background-color: var(--pet-rosado-hover);
         color: #fff;
         transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(251, 113, 133, 0.4);
+        box-shadow: 0 6px 16px rgba(244, 63, 94, 0.45);
     }
 
-    .btn-pet-verde {
-        background-color: var(--pet-mint-dark);
+    .btn-pet-celeste {
+        background-color: var(--pet-celeste);
         border: none;
         color: #fff;
         border-radius: 50px;
-        padding: 0.5rem 1.2rem;
-        font-weight: 600;
-        box-shadow: 0 4px 10px rgba(34, 197, 94, 0.3);
+        padding: 0.55rem 1.3rem;
+        font-weight: 700;
+        box-shadow: 0 4px 12px rgba(56, 189, 248, 0.35);
         transition: all 0.2s ease-in-out;
     }
-    .btn-pet-verde:hover {
-        background-color: #16a34a;
+    .btn-pet-celeste:hover {
+        background-color: var(--pet-celeste-hover);
         color: #fff;
         transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(56, 189, 248, 0.45);
     }
 
     .btn-pet-amarillo {
-        background-color: #facc15;
+        background-color: #fbbf24;
         border: none;
         color: #1e293b;
         border-radius: 50px;
         font-weight: 700;
-        box-shadow: 0 4px 10px rgba(250, 204, 21, 0.3);
+        box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
         transition: all 0.2s ease-in-out;
     }
     .btn-pet-amarillo:hover {
-        background-color: #eab308;
+        background-color: #f59e0b;
+        color: #1e293b;
         transform: translateY(-2px);
     }
 
-    /* Tarjetas de mascotas más dinámicas */
+    /* Tarjetas de mascotas con estilo tierno y dinámico */
     .card-mascota {
         border: none;
-        border-radius: 20px;
+        border-radius: 22px;
         overflow: hidden;
         background: var(--pet-card-bg);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        box-shadow: 0 10px 25px rgba(244, 63, 94, 0.08);
         transition: transform .25s ease, box-shadow .25s ease;
         height: 100%;
+        border: 2px solid #fce7f3;
     }
     .card-mascota:hover {
         transform: translateY(-6px);
-        box-shadow: 0 15px 35px rgba(59, 130, 246, 0.12);
+        box-shadow: 0 16px 35px rgba(56, 189, 248, 0.2);
+        border-color: var(--pet-celeste);
     }
     .card-mascota .card-img-top {
         height: 220px;
@@ -123,47 +129,48 @@
     }
     .card-header-especie {
         position: absolute;
-        top: 15px;
-        right: 15px;
+        top: 14px;
+        right: 14px;
         border-radius: 30px;
         padding: 6px 14px;
         font-weight: 700;
         font-size: 0.85rem;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.12);
     }
 
-    .badge-disponible { background-color: var(--pet-mint-dark); color: #fff; }
-    .badge-adoptado { background-color: var(--pet-pink); color: #fff; }
+    .badge-disponible { background-color: #10b981; color: #fff; }
+    .badge-adoptado { background-color: var(--pet-rosado); color: #fff; }
 
-    /* Secciones de título con estilo juguetón */
+    /* Franjas de títulos atractivas */
     .franja-titulo {
-        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        background: linear-gradient(135deg, var(--pet-celeste) 0%, #0284c7 100%);
         color: #fff;
-        border-left: 8px solid #facc15;
+        border-left: 8px solid var(--pet-rosado);
         padding: 0.8rem 1.2rem;
-        border-radius: 12px;
+        border-radius: 14px;
         margin-bottom: 1.5rem;
-        box-shadow: 0 4px 15px rgba(30, 64, 175, 0.15);
+        box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2);
     }
 
     .panel-formulario {
         background: #fff;
-        border-radius: 20px;
+        border-radius: 24px;
         padding: 2.2rem;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.04);
-        border-top: 6px solid var(--pet-pink);
+        box-shadow: 0 10px 30px rgba(244, 63, 94, 0.06);
+        border-top: 6px solid var(--pet-rosado);
+        border: 2px solid #fce7f3;
     }
 
     .form-control, .form-select {
-        border-radius: 12px;
+        border-radius: 14px;
         padding: 0.7rem 1rem;
-        border: 2px solid #e2e8f0;
-        background-color: #f8fafc;
+        border: 2px solid #fbcfe8;
+        background-color: #fffbfe;
     }
     .form-control:focus, .form-select:focus {
-        border-color: #3b82f6;
+        border-color: var(--pet-celeste);
         background-color: #fff;
-        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.2);
     }
 
     .preview-foto {
@@ -171,32 +178,33 @@
         max-height: 180px;
         object-fit: cover;
         border-radius: 14px;
-        border: 2px dashed #cbd5e1;
+        border: 2px dashed #f472b6;
         display: none;
     }
 
     .modal-header-pet {
-        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        background: linear-gradient(135deg, var(--pet-celeste) 0%, var(--pet-rosado) 100%);
         color: #fff;
-        border-bottom: 4px solid #facc15;
+        border-bottom: 4px solid #fbbf24;
     }
     .foto-modal {
         width: 100%;
         max-height: 380px;
         object-fit: cover;
-        border-radius: 16px;
+        border-radius: 18px;
         margin-bottom: 1rem;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
     }
 
     footer.footer-pet {
-        background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+        background: linear-gradient(135deg, var(--pet-rosado) 0%, var(--pet-celeste) 100%);
         color: #fff;
-        border-top: 5px solid #facc15;
+        border-top: 5px solid #fbbf24;
         padding: 1.8rem 0;
         margin-top: 4rem;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
-    footer.footer-pet strong { color: #facc15; }
+    footer.footer-pet strong { color: #fef08a; }
     .empty-state { text-align: center; padding: 3rem 1rem; color: #64748b; }
 </style>
 </head>
@@ -204,16 +212,16 @@
 
 <nav class="navbar navbar-pet navbar-dark py-3 mb-4">
     <div class="container d-flex align-items-center">
-        <!-- Insignia / Logotipo con forma de huella de mascota y colores institucionales -->
+        <!-- Insignia / Logotipo con forma de huella de mascota y combinación celeste/rosado -->
         <svg class="logo-huella" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="50" cy="50" r="48" fill="#1e40af" stroke="#facc15" stroke-width="4"/>
-            <!-- Almohadilla central en forma de corazón/huella -->
-            <path d="M50 54 c-8 -2 -14 4 -14 11 c0 6 5 10 14 10 c9 0 14 -4 14 -10 c0 -7 -6 -13 -14 -11z" fill="#facc15"/>
-            <!-- Deditos flotantes -->
-            <circle cx="36" cy="42" r="6" fill="#facc15"/>
-            <circle cx="50" cy="35" r="6.5" fill="#facc15"/>
-            <circle cx="64" cy="42" r="6" fill="#facc15"/>
-            <text x="50" y="24" text-anchor="middle" font-size="9" fill="#fb7185" font-weight="bold" font-family="Arial">USB</text>
+            <circle cx="50" cy="50" r="48" fill="#38bdf8" stroke="#fef08a" stroke-width="4"/>
+            <!-- Almohadilla central de huella -->
+            <path d="M50 54 c-8 -2 -14 4 -14 11 c0 6 5 10 14 10 c9 0 14 -4 14 -10 c0 -7 -6 -13 -14 -11z" fill="#fef08a"/>
+            <!-- Deditos -->
+            <circle cx="36" cy="42" r="6" fill="#fef08a"/>
+            <circle cx="50" cy="35" r="6.5" fill="#fef08a"/>
+            <circle cx="64" cy="42" r="6" fill="#fef08a"/>
+            <text x="50" y="24" text-anchor="middle" font-size="9" fill="#f43f5e" font-weight="bold" font-family="Arial">USB</text>
         </svg>
         <div>
             <span class="navbar-brand mb-0 h1">Sistema de Control y Adopción de Mascotas</span>
@@ -265,7 +273,7 @@
             </div>
             <div class="col-12 text-end mt-4">
                 <button type="reset" class="btn btn-outline-secondary me-2 px-4" style="border-radius: 50px;"><i class="bi bi-arrow-counterclockwise"></i> Limpiar</button>
-                <button type="submit" class="btn btn-pet-rosa px-4"><i class="bi bi-heart-fill"></i> Registrar Mascota</button>
+                <button type="submit" class="btn btn-pet-rosado px-4"><i class="bi bi-heart-fill"></i> Registrar Mascota</button>
             </div>
         </form>
     </div>
@@ -286,7 +294,7 @@
 
 <div class="modal fade" id="modalPerfil" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content" style="border-radius: 20px; overflow: hidden;">
+        <div class="modal-content" style="border-radius: 22px; overflow: hidden; border: 2px solid #fbcfe8;">
             <div class="modal-header modal-header-pet">
                 <h5 class="modal-title"><i class="bi bi-file-earmark-person"></i> Ficha Completa de la Mascota</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -294,7 +302,7 @@
             <div class="modal-body p-4" id="modalBody"></div>
             <div class="modal-footer bg-light">
                 <button type="button" class="btn btn-outline-danger px-4" style="border-radius: 50px;" id="btnEliminarModal"><i class="bi bi-trash"></i> Eliminar</button>
-                <button type="button" class="btn btn-pet-amarillo px-4" data-bs-dismiss="modal" style="color: #000;">Cerrar</button>
+                <button type="button" class="btn btn-pet-celeste px-4" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
@@ -412,9 +420,9 @@
         listaFiltrada.forEach(mascota => {
             const esDisponible = mascota.estado === 'Disponible';
             const claseBadge = esDisponible ? 'badge-disponible' : 'badge-adoptado';
-            // Botones personalizados con diseño de patita/corazón
+            // Botones personalizados con diseño dinámico
             const textoBtnEstado = esDisponible ? '<i class="bi bi-heart-fill"></i> Marcar Adoptado' : '<i class="bi bi-arrow-counterclockwise"></i> Marcar Disponible';
-            const claseBtnEstado = esDisponible ? 'btn-pet-rosa' : 'btn-pet-verde';
+            const claseBtnEstado = esDisponible ? 'btn-pet-rosado' : 'btn-pet-celeste';
 
             const columna = document.createElement('div');
             columna.className = 'col-sm-6 col-lg-4';
@@ -425,7 +433,7 @@
                     <img src="${mascota.foto || ''}" class="card-img-top" alt="Foto">
                     <div class="card-body d-flex flex-column p-4">
                         <h5 class="card-title mb-1 fw-bold">${mascota.nombre}</h5>
-                        <p class="card-text text-muted mb-3"><i class="bi bi-tag-fill text-primary"></i> ${mascota.especie} &nbsp;|&nbsp; <i class="bi bi-calendar3 text-primary"></i> ${mascota.edad} años</p>
+                        <p class="card-text text-muted mb-3"><i class="bi bi-tag-fill" style="color:var(--pet-celeste)"></i> ${mascota.especie} &nbsp;|&nbsp; <i class="bi bi-calendar3" style="color:var(--pet-celeste)"></i> ${mascota.edad} años</p>
                         <div class="mt-auto d-grid gap-2">
                             <button class="btn btn-pet-amarillo btn-sm btn-ver-perfil py-2" data-id="${mascota.id}"><i class="bi bi-shield-shaded"></i> Ver Perfil</button>
                             <button class="btn ${claseBtnEstado} btn-sm btn-toggle-estado py-2" data-id="${mascota.id}">${textoBtnEstado}</button>
